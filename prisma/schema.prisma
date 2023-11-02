@@ -22,4 +22,5 @@ model Payment {
   transferCode String
   userId String
   amount Int
+  paymentAPI String
 }
