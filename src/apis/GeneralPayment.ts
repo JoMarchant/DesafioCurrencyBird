@@ -1,10 +1,11 @@
 import axios from "axios";
+import axiosRetry from "axios-retry";
 import { TokenResponse, GeneralPayment } from "../interfaces";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const MAX_RETRIES = 1;
+const MAX_RETRIES = 3;
 const enviroment = process.env.NODE_ENV || "development";
 let url: string;
 
@@ -15,9 +16,23 @@ if (enviroment === "production") {
 }
 
 const api = axios.create({ baseURL: url });
+// https://www.zenrows.com/blog/axios-retry#retry-on-error
+axiosRetry(api, {
+  retries: MAX_RETRIES,
+  retryDelay: axiosRetry.exponentialDelay,
+  retryCondition: (error) => {
+    return (
+      axiosRetry.isNetworkOrIdempotentRequestError(error) ||
+      error.response?.status === 500
+    );
+  },
+});
 
 const getAuthorizationToken = async (email: string): Promise<TokenResponse> => {
-  const response = await api.get("/token", { params: { email } });
+  const response = await api.get("/token", {
+    params: { email },
+    validateStatus: (status) => status < 500,
+  });
 
   return { token: response.data!, status: response.status };
 };
@@ -28,28 +43,19 @@ const makePayment = async (
   transferCode: string,
   amount: string,
 ): Promise<GeneralPayment | null> => {
-  let retries = 0;
-  while (retries < MAX_RETRIES) {
-    try {
-      const response = await api.post(
-        "/payment",
-        { transferCode, amount },
-        {
-          headers: { Authorization: token },
-          params: { email, transferCode },
-        },
-      );
-
-      if (response.status !== 200) {
-        throw new Error("Error making payment");
-      }
-
-      return response.data;
-    } catch (error) {
-      retries++;
-    }
+  try {
+    const response = await api.post(
+      "/payment",
+      { transferCode, amount },
+      {
+        headers: { Authorization: token },
+        params: { email, transferCode },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    return null;
   }
-  return null;
 };
 
 const getPayment = async (
@@ -61,9 +67,7 @@ const getPayment = async (
     params: { email, transferCode },
     headers: { Authorization: token },
   });
-  if (response.status !== 200) {
-    throw new Error("Error getting payment");
-  }
+
   return response.data;
 };
 
