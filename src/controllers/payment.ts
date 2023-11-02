@@ -8,8 +8,8 @@ export const sendGeneralPayment = async (
 ): Promise<void> => {
   const token: string = req.token!;
   const body = req.body;
-  if (!body.amount) {
-    res.status(400).send("El amount es requerido");
+  if (!body.amount || isNaN(body.amount)) {
+    res.status(400).send("El amount es requerido/invalido");
     return;
   }
 
