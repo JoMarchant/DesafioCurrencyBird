@@ -5,8 +5,10 @@ services:
     build: .
     ports:
       - "5000:5000"
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-      NODE_ENV: ${NODE_ENV}
-      PORT: ${PORT}
-      
+
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
