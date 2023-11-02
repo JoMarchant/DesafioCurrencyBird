@@ -31,6 +31,7 @@ export const sendGeneralPayment = async (
         userId: req.userId as string,
         amount: body.amount,
         transferCode: body.transferCode,
+        paymentAPI: "GeneralPayment",
       },
     });
     res.status(201).send(paymentResponse);
