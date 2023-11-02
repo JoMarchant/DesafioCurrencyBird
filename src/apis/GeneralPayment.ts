@@ -1,5 +1,8 @@
 import axios from "axios";
 import { TokenResponse, GeneralPayment } from "../interfaces";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const MAX_RETRIES = 1;
 const enviroment = process.env.NODE_ENV || "development";
