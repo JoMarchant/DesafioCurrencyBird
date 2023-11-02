@@ -2,6 +2,25 @@ import { Response, NextFunction, Request } from "express";
 import GeneralPayment from "../apis/GeneralPayment";
 import { TokenResponse } from "../interfaces";
 
+export const checkAPIKey = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const apiKey = req.headers["Authorization"];
+  if (!apiKey) {
+    res.status(401).send("API Key requerida");
+    return;
+  }
+
+  if (apiKey !== process.env.API_KEY) {
+    res.status(401).send("API Key inválida");
+    return;
+  }
+
+  next();
+};
+
 export const authGeneralPayment = async (
   req: Request,
   res: Response,
