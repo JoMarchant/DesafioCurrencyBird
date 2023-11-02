@@ -35,7 +35,6 @@ export const authGeneralPayment = async (
   try {
     const response: TokenResponse =
       await GeneralPayment.getAuthorizationToken(email);
-
     if (response.status === 401) {
       res.status(401).send("Email no autorizado para realizar pagos");
       return;
