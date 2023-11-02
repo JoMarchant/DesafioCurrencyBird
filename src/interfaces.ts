@@ -1,9 +1,3 @@
-export interface Payment {
-  email: string;
-  transferCode: string;
-  amount: number;
-}
-
 export interface GeneralPayment {
   amount: string;
   email: string;
@@ -19,5 +13,6 @@ export interface TokenResponse {
 declare module "express" {
   interface Request {
     token?: string;
+    userId?: string;
   }
 }
