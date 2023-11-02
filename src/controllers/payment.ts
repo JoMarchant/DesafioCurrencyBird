@@ -1,56 +1,41 @@
 import { Response, Request } from "express";
 import GeneralPayment from "../apis/GeneralPayment";
 import prisma from "../prisma";
-import { Payment } from "../interfaces";
-import { User } from "@prisma/client";
 
 export const sendGeneralPayment = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   const token: string = req.token!;
-  const payment: Payment = req.body;
-
-  let currentUser: User | null = await prisma.user.findUnique({
-    where: {
-      email: payment.email,
-    },
-  });
-
-  if (!currentUser) {
-    currentUser = await prisma.user.create({
-      data: {
-        email: payment.email,
-      },
-    });
-  }
-
-  const paymentCount = await prisma.payment.count({
-    where: { userId: currentUser.id, transferCode: payment.transferCode },
-  });
-
-  if (paymentCount) {
-    res.status(400).send("El usuario ya no puede utilizar este transferCode");
+  const body = req.body;
+  if (!body.amount) {
+    res.status(400).send("El amount es requerido");
     return;
   }
 
   const paymentResponse = await GeneralPayment.makePayment(
-    currentUser.email,
+    body.email,
     token,
-    payment,
+    body.transferCode,
+    body.amount,
   );
 
-  if (paymentResponse) {
+  if (!paymentResponse) {
+    res.status(500).send("Error al realizar el pago (sistema externo caído)");
+    return;
+  }
+
+  try {
     await prisma.payment.create({
       data: {
-        userId: currentUser.id,
-        amount: payment.amount,
-        transferCode: payment.transferCode,
+        userId: req.userId as string,
+        amount: body.amount,
+        transferCode: body.transferCode,
       },
     });
     res.status(201).send(paymentResponse);
-  } else {
-    res.status(500).send("Error al realizar el pago (sistema externo caído)");
+  } catch (error) {
+    res.status(500).send("Error al crear el pago (interno)");
   }
 };
 
@@ -60,12 +45,14 @@ export const getPaymentInfo = async (
 ): Promise<void> => {
   try {
     const { email, transferCode } = req.query;
+    const token: string = req.token!;
     const payment = await GeneralPayment.getPayment(
+      token,
       email as string,
       transferCode as string,
     );
     res.status(200).send(payment);
   } catch (error) {
-    res.status(500).send("Error al obtener el pago");
+    res.status(500).send("Error al obtener el pago (sistema externo caído)");
   }
 };

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Payment, TokenResponse, GeneralPayment } from "../interfaces";
+import { TokenResponse, GeneralPayment } from "../interfaces";
 
 const MAX_RETRIES = 1;
 const enviroment = process.env.NODE_ENV || "development";
@@ -22,15 +22,20 @@ const getAuthorizationToken = async (email: string): Promise<TokenResponse> => {
 const makePayment = async (
   email: string,
   token: string,
-  payment: Payment,
+  transferCode: string,
+  amount: string,
 ): Promise<GeneralPayment | null> => {
   let retries = 0;
   while (retries < MAX_RETRIES) {
     try {
-      const response = await api.post("/payment", payment, {
-        headers: { Authorization: token },
-        params: { email, transferCode: payment.transferCode },
-      });
+      const response = await api.post(
+        "/payment",
+        { transferCode, amount },
+        {
+          headers: { Authorization: token },
+          params: { email, transferCode },
+        },
+      );
 
       if (response.status !== 200) {
         throw new Error("Error making payment");
@@ -45,11 +50,13 @@ const makePayment = async (
 };
 
 const getPayment = async (
+  token: string,
   email: string,
   transferCode: string,
-): Promise<GeneralPayment> => {
+): Promise<GeneralPayment | string> => {
   const response = await api.get("/payment", {
     params: { email, transferCode },
+    headers: { Authorization: token },
   });
   if (response.status !== 200) {
     throw new Error("Error getting payment");
