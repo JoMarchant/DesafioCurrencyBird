@@ -64,6 +64,8 @@ La base de datos PostgreSQL está montada en una instancia EC2 de AWS. La direcc
 
 ## Endpoints
 
+ **El API Key que se debe utilizar para hacer las request está en el correo de entrega. Se debe colocar en el header `x-api-key`.**
+
 ### POST /payment/generalPayment
 
 Endpoint para realizar un pago en GeneralPayment
