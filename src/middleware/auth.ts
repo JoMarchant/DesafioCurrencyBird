@@ -7,7 +7,7 @@ export const checkAPIKey = (
   res: Response,
   next: NextFunction,
 ) => {
-  const apiKey = req.headers["authorization"];
+  const apiKey = req.headers["x-api-key"];
   if (!apiKey) {
     console.log(req.headers);
     res.status(401).send("API Key requerida");
