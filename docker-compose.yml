@@ -2,7 +2,8 @@ version: "1.0"
 
 services:
   server:
-    build: .
+    build:
+      dockerfile: Dockerfile.${NODE_ENV}
     ports:
       - "5000:5000"
 
