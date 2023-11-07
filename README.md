@@ -16,7 +16,8 @@ La base de datos PostgreSQL está montada en una instancia EC2 de AWS. La direcc
 
 - Node.js + Typescript
 - Express en Typescript
-- Postgres
+- Prisma ORM
+- PostgreSQL
 - Docker
 - Nginx
 
