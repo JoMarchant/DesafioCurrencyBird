@@ -32,7 +32,7 @@ La base de datos PostgreSQL está montada en una instancia EC2 de AWS. La direcc
 - Llenar el archivo .env a partir de .env.sample:
   - PORT = 5000 (dejar así para que funcione con nginx y Docker)
   - NODE_ENV = development
-  - DATABASE_URL = url de la base de datos (postgres) formato : ```postgres://user:password@host:port/database``` Cambiar 'database' segun corresponda (desarrollo)
+  - DATABASE_URL = url de la base de datos (Postgre) formato : ```postgres://user:password@host:port/database``` Cambiar 'database' segun corresponda (desarrollo). Si no se tiene, usar la del correo de entrega.
   - API_KEY = api key que usarás en header['x-api-key'] para acceder a los endpoints.
 - Ejecutar `docker-compose build`
 - Ejecutar `docker-compose up`
