@@ -126,7 +126,7 @@ Request Body (**Solo para mandar el email de autenticación**):
 }
 ```
 
-`No tuve el tiempo para pensar una mejor solución`
+`En una integración más completa, podría enviar el correo o autenticación de otra forma para este endpoint`
 
 Request Query Params:
 
