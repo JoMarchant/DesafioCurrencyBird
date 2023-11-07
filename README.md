@@ -2,7 +2,7 @@
 
 ## Comentarios
 
-- Del enunciado no me quedó claro si tenía que dejar envíado el pago en producción, así aprovecho de aclarar que si lo dejé hecho.
+- Del enunciado no me quedó claro si tenía que dejar envíado el pago en producción, de todas formas lo dejé realizado. Sin querer hice un pago con transferCode: "<jose_marchant1@uc.cl>". Pero en lo hablado respecto al enunciado por correo, lo importante es solo para el transferCode: "<jose_marchant@uc.cl>".
 - La autenticación solo se hace con un API_KEY ya que no se comentaba nada al respecto.
 - El código está estructurado de forma que se puedan agregar más APIs externas para realizar pagos. Solo es agregar un modulo en ```./src/apis/nueva_api.ts``` y un nuevo módulo de middleware en ```./src/middlewares/nueva_api.ts```.
 
@@ -114,6 +114,16 @@ Response Body:
 ### GET /payment/generalPayment
 
 Endpoint para revisar el estado de un pago en GeneralPayment
+
+Request Body (**Solo para mandar el email de autenticación**):
+
+```json
+{
+  "email": "ejemplo@ejemplo.com",
+}
+```
+
+`No tuve el tiempo para pensar una mejor solución`
 
 Request Query Params:
 
