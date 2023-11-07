@@ -29,7 +29,7 @@ La base de datos PostgreSQL está montada en una instancia EC2 de AWS. La direcc
 ### Pasos para ejecutar
 
 - Clonar el repositorio
-- Llenar el archivo .env:
+- Llenar el archivo .env a partir de .env.sample:
   - PORT = 5000 (dejar así para que funcione con nginx y Docker)
   - NODE_ENV = development
   - DATABASE_URL = url de la base de datos (postgres) formato : ```postgres://user:password@host:port/database``` Cambiar 'database' segun corresponda (desarrollo)
